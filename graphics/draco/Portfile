@@ -1,0 +1,49 @@
+PortSystem		1.0
+PortGroup		github 1.0
+PortGroup		cmake 1.1
+
+name			draco
+version			1.3.6
+categories		graphics
+platforms		darwin
+license			Apache-2
+maintainers		@jasonliu-- openmaintainer
+homepage		https://opensource.google/projects/draco
+description		library for compressing and decompressing 3-D \
+			geometric meshes and point clouds
+long_description 	Draco is a ${description}. It is intended to \
+			improve the storage and transmission of 3-D \
+			graphics.
+
+github.setup		google draco ${version}
+
+checksums		rmd160	12619d1e735d5eb957127a00447207ed03d16629 \
+			sha256	c99e2320fc840523b779f13e2020e3f10fe4eca21835772556ee76e5c76ecfd7 \
+			size	24001088
+
+compiler.blacklist	clang
+
+configure.args		-DENABLE_EXTRA_WARNINGS=ON \
+			-DENABLE_WERROR=ON \
+			-DENABLE_WEXTRA=ON
+
+variant gtest description {Enable GoogleTest unit testing support} {
+	depends_lib-append	port:gtest
+	configure.args-append	-DENABLE_TESTS=ON \
+				-DGTEST_SOURCE_DIR=${prefix}/src
+}
+
+variant usd description {Build plugin library for USD} {
+	configure.args-append	-DBUILD_USD_PLUGIN=ON
+}
+
+variant unity description {Build plugin library for Unity} {
+	configure.args-append	-DBUILD_UNITY_PLUGIN=ON
+}
+
+# This fails to compile
+#variant maya description {Build plugin library for Maya} {
+#	configure.args-append	-DBUILD_MAYA_PLUGIN=ON
+#}
+
+default_variants +gtest +usd +unity
